@@ -1,0 +1,28 @@
+server:
+  servlet:
+    jsp:
+      init-parameters:
+        development: true
+  port: 8080
+spring:
+  application:
+    name: boot_ddd
+  datasource:
+    url:  jdbc:mysql://localhost:3306/test2_2105?useSSL=false&serverTimezone=UTC&GMT%2B8
+    username: root
+    password: 1994
+    name: defaultDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+  mvc:
+    view:
+      prefix: /WEB-INF/page/
+      suffix: .jsp
+    static-path-pattern: /**
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  type-enums-package: com.dj.ddd.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.dj.ddd.mapper: debug

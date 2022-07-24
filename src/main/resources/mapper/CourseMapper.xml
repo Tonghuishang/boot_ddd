@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	namespace:用于隔离SQL全局唯一（采用接口和XML开发时为接口的全路径）
+ -->
+<mapper namespace="com.dj.ddd.mapper.CourseMapper" >
+
+
+    <select id="findAll" resultType="com.dj.ddd.mapper.coursebo.CourseBo">
+        SELECT
+            a.id,
+            a.course_name,
+            a.sort,
+            (
+                SELECT
+                    COUNT(0)
+                FROM
+                    k_and_j b
+                WHERE
+                    b.k_id = a.id
+            ) AS tra_number,
+            (
+                SELECT
+                    COUNT(0)
+                FROM
+                    k_and_st c
+                WHERE
+                    c.k_id = a.id
+            ) AS teacher_number
+        FROM
+            course_boot a
+        GROUP BY
+            a.sort;
+
+    </select>
+    <select id="findTro" resultType="com.dj.ddd.mapper.coursebo.TraBo">
+        SELECT
+            c.j_name,
+            c.id
+        FROM
+            course_boot a
+                LEFT JOIN k_and_j b ON a.id = b.k_id
+                LEFT JOIN jiao c ON b.j_id = c.id
+        WHERE a.id = #{id}
+    </select>
+    <select id="findTeacher" resultType="com.dj.ddd.mapper.coursebo.TeacherBo">
+        SELECT
+            c.te_name,
+            c.id,
+            b.fo_time,
+            b.is_del
+        FROM
+            course_boot a
+                LEFT JOIN k_and_st b ON a.id = b.k_id
+                LEFT JOIN teacher_boot c ON b.st_id = c.id
+        WHERE
+            a.id = #{id}
+    </select>
+    <select id="findMaxSort" resultType="java.lang.Integer">
+        SELECT
+            MAX(c.sort)
+        FROM
+            course_boot c
+    </select>
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	namespace:用于隔离SQL全局唯一（采用接口和XML开发时为接口的全路径）
+ -->
+<mapper namespace="com.dj.ddd.mapper.UserDetMapper" >
+    <sql id="User_Column">
+        ud.id,
+        ud.user_id,
+        ud.sex,
+        ud.age,
+        ud.nick_name
+    </sql>
+    <select id="findAll" resultType="com.dj.ddd.mapper.userbo.ShowUserBo">
+        SELECT
+        <include refid="User_Column"></include>,
+        b.base_name as sex_show,
+        u.user_name user_name,
+        DATE_FORMAT(MAX(l.login_time),"%Y-%m-%d %H:%i:%s") AS login_time_show
+        FROM
+        user_details ud
+        LEFT JOIN `user` u ON ud.user_id = u.id
+        LEFT JOIN base b ON b.id = ud.sex
+        LEFT JOIN user_login_record l ON l.user_id=u.id
+        <where>
+            <if test="bo.userName != null and bo.userName != '' ">
+                <bind name="userName" value="'%'+bo.userName+'%'"/>
+                and (u.user_name like #{userName} or ud.nick_name like#{userName})
+            </if>
+            <if test="bo.sex != null ">
+                and ud.sex = #{bo.sex}
+            </if>
+            <if test="bo.startAge != null ">
+                and ud.age &gt; #{bo.startAge}
+            </if>
+            <if test="bo.endAge != null ">
+                and ud.age &lt; #{bo.endAge}
+            </if>
+          <!--  <if test="bo.startTime != null ">
+                and ud.age &lt; #{bo.startTime}
+            </if>
+            <if test="bo.endTime != null ">
+                and ud.age &lt; #{bo.endTime}
+            </if>-->
+        </where>
+        GROUP BY u.id
+    </select>
+    <select id="findById" resultType="com.dj.ddd.mapper.userbo.QueryOneBo">
+        SELECT
+        <include refid="User_Column"></include>,
+        b.base_name as sex_show,
+        u.user_name user_name
+        FROM
+        user_details ud
+        LEFT JOIN `user` u ON ud.user_id = u.id
+        LEFT JOIN base b ON b.id = ud.sex
+        WHERE ud.id = #{id}
+    </select>
+
+</mapper>
