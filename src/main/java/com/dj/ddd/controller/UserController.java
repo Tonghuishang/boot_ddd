@@ -69,4 +69,9 @@ public class UserController {
         userDetService.update(DozerUtil.map(updateVo,UpdateDto.class));
         return new ResultModel<>().success("成功");
     }
+    @RequestMapping("test")
+    public ResultModel test(UpdateVo updateVo){
+        userDetService.update(DozerUtil.map(updateVo,UpdateDto.class));
+        return new ResultModel<>().success("成功");
+    }
 }
