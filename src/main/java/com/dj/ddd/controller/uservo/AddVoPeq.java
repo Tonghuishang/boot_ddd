@@ -10,7 +10,4 @@ public class AddVoPeq {
     private Integer sex;
     private Integer age;
     private String nickName;
-    private String test;
-    private String test1;
-
 }
